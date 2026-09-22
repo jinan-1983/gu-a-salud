@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Guía de salud - Jinan",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "Salud Jinan",
+  "start_url": "/",
+  "theme_color": "#0284c7",
+  "id": "/",
+  "description": "Aplicación de primeros auxilios y orientación sobre medicamentos."
+}
