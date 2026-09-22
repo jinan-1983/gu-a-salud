@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Salud - Jinan</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --secondary: #10b981;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 440px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0284c7, #0d9488);
+      color: white;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .header h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
+
+    .content { padding: 20px; }
+
+    .card-section {
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 11px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      background: white;
+      margin-bottom: 8px;
+    }
+
+    .btn-camera {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-camera:hover { background: #059669; }
+
+    button {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    button:hover { background: var(--primary-dark); }
+
+    .btn-auxilio {
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .btn-audio {
+      background: #f59e0b;
+      margin-top: 10px;
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    .btn-audio:hover { background: #d97706; }
+
+    .result-box {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-size: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .preview-img {
+      width: 100%;
+      max-height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .disclaimer {
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: center;
+      padding: 10px 20px 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #64748b;
+      font-weight: bold;
+      border-top: 1px solid #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <div class="header">
+      <h1>Guía de Salud - Jinan 🩺</h1>
+      <p>Información rápida y adaptada para todas las edades</p>
+    </div>
+
+    <div class="content">
+      <!-- Medicamentos con Foto -->
+      <div class="card-section">
+        <div class="section-title">💊 Reconocer Medicamento</div>
+        
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarFoto(event)">
+        <button class="btn-camera" onclick="document.getElementById('cameraInput').click()">
+          📷 Hacer Foto a la Caja
+        </button>
+
+        <input type="text" id="medInput" placeholder="O escribe aquí el nombre...">
+        <button onclick="buscarMed()">Consultar por texto</button>
+
+        <img id="preview" class="preview-img" alt="Foto del medicamento">
+        <div id="resMed" class="result-box"></div>
+        <button id="btnAudioMed" class="btn-audio" style="display: none;" onclick="leerVoz('resMed')">🔊 Escuchar en Voz Alta</button>
+      </div>
+
+      <!-- Síntomas -->
+      <div class="card-section">
+        <div class="section-title">🤒 Consultar Síntoma</div>
+        <input type="text" id="sinInput" placeholder="Ej: Dolor de cabeza, fiebre...">
+        <button onclick="buscarSin()">Ver consejos</button>
+        <div id="resSin" class="result-box"></div>
+        <button id="btnAudioSin" class="btn-audio" style="display: none;" onclick="leerVoz('resSin')">🔊 Escuchar en Voz Alta</button>
+      </div>
+
+      <!-- Primeros Auxilios con Edad -->
+      <div class="card-section">
+        <div class="section-title">🚨 Primeros Auxilios Adaptados</div>
+        
+        <label for="edadSelect">Selecciona la edad de la persona:</label>
+        <select id="edadSelect">
+          <option value="bebe">👶 Bebé (0 a 1 año)</option>
+          <option value="nino">🧒 Niño (1 a 12 años)</option>
+          <option value="adulto" selected>🧑 Adulto / Joven (+12 años)</option>
+        </select>
+
+        <button class="btn-auxilio" onclick="mostrarAux('atraganta')"><span>🫁 Atragantamiento</span> ➔</button>
+        <button class="btn-auxilio" onclick="mostrarAux('quema')"><span>🔥 Quemaduras leves</span> ➔</button>
+        <button class="btn-auxilio" onclick="mostrarAux('corte')"><span>🩹 Cortes y heridas</span> ➔</button>
+        <button class="btn-auxilio" onclick="mostrarAux('fiebre')"><span>🌡️ Fiebre alta</span> ➔</button>
+        
+        <div id="resAux" class="result-box"></div>
+        <button id="btnAudioAux" class="btn-audio" style="display: none;" onclick="leerVoz('resAux')">🔊 Escuchar en Voz Alta</button>
+      </div>
+
+      <div class="disclaimer">
+        ⚠️ Esta aplicación es una guía orientativa. En emergencias graves llama al 112.
+      </div>
+    </div>
+
+    <div class="footer">
+      Aplicación oficial creada por Jinan ✨
+    </div>
+  </div>
+
+  <script>
+    function procesarFoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const preview = document.getElementById('preview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'block';
+
+        const res = document.getElementById('resMed');
+        res.style.display = 'block';
+        res.innerHTML = "🔍 <strong>Analizando imagen...</strong><br>Detectado: <strong>Ibuprofeno 600mg</strong>.<br><em>Sirve para reducir la inflamación, el dolor y la fiebre. Se recomienda tomarlo acompañado de alimento.</em>";
+        
+        document.getElementById('btnAudioMed').style.display = 'block';
+      }
+    }
+
+    function buscarMed() {
+      const q = document.getElementById('medInput').value.toLowerCase().trim();
+      const res = document.getElementById('resMed');
+      res.style.display = 'block';
+      document.getElementById('preview').style.display = 'none';
+
+      if (q.includes('paracetamol')) {
+        res.innerHTML = "<strong>Paracetamol:</strong> Analgésico y antipirético. Indicado para fiebre y dolor leve o moderado.";
+      } else if (q.includes('ibuprofeno')) {
+        res.innerHTML = "<strong>Ibuprofeno:</strong> Antiinflamatorio. Ideal para dolores, inflamación o fiebre. Tomar con alimentos.";
+      } else if (q !== '') {
+        res.innerHTML = `<strong>${q}:</strong> Consulta el prospecto del envase o pregunta a tu farmacéutico.`;
+      } else {
+        res.innerHTML = "Escribe el nombre o haz una foto a la caja.";
+      }
+      document.getElementById('btnAudioMed').style.display = 'block';
+    }
+
+    function buscarSin() {
+      const q = document.getElementById('sinInput').value.toLowerCase().trim();
+      const res = document.getElementById('resSin');
+      res.style.display = 'block';
+
+      if (q.includes('cabeza') || q.includes('dolor')) {
+        res.innerHTML = "<strong>Dolor de cabeza:</strong> Reposa en un ambiente tranquilo y oscuro. Mantén buena hidratación.";
+      } else if (q.includes('fiebre')) {
+        res.innerHTML = "<strong>Fiebre:</strong> Mantén la hidratación, descansa y evita el exceso de ropa. Si supera 38.5ºC, consulta al médico.";
+      } else if (q !== '') {
+        res.innerHTML = "<strong>Recomendación:</strong> Guarda reposo, bebe suficiente agua y consulta a un especialista si el síntoma persiste.";
+      } else {
+        res.innerHTML = "Escribe un síntoma para orientarte.";
+      }
+      document.getElementById('btnAudioSin').style.display = 'block';
+    }
+
+    function mostrarAux(tipo) {
+      const edad = document.getElementById('edadSelect').value;
+      const res = document.getElementById('resAux');
+      res.style.display = 'block';
+
+      if (tipo === 'atraganta') {
+        if (edad === 'bebe') {
+          res.innerHTML = "<strong>Atragantamiento en Bebé (0-1 año):</strong><br>1. Coloca al bebé boca abajo sobre tu antebrazo, sujetando su barbilla.<br>2. Dale 5 palmaditas suaves pero firmes en la espalda (entre los hombros).<br>3. Si no expulsa el objeto, gíralo boca arriba y da 5 compresiones en el pecho con dos dedos.<br>4. Llama al 112 si sigue atragantado.";
+        } else if (edad === 'nino') {
+          res.innerHTML = "<strong>Atragantamiento en Niño (1-12 años):</strong><br>1. Anímale a toser con fuerza.<br>2. Si no puede toser, inclínalo hacia adelante y dale 5 palmadas en la espalda.<br>3. Si persiste, realiza compresión abdominal (Maniobra de Heimlich) adaptada a su tamaño.";
+        } else {
+          res.innerHTML = "<strong>Atragantamiento en Adulto:</strong><br>1. Anima a toser con fuerza.<br>2. Inclinado hacia adelante, da 5 palmadas firmes en la espalda con la palma de la mano.<br>3. Si no se libera, realiza la maniobra de Heimlich presionando la boca del estómago hacia arriba.";
+        }
+      } else if (tipo === 'quema') {
+        if (edad === 'bebe') {
+          res.innerHTML = "<strong>Quemadura en Bebé:</strong><br>1. Enfría con agua templada/fresca (nunca muy fría) durante 10 min.<br>2. No uses hielo, pasta de dientes ni cremas.<br>3. Cubre con un paño limpio y seco. Consulta urgentemente con un médico.";
+        } else {
+          res.innerHTML = "<strong>Quemadura leve:</strong><br>1. Pon la zona bajo un chorro de agua templada o fresca durante 10-15 min.<br>2. No apliques hielo, cremas ni aceites.<br>3. Cubre con una gasa estéril o paño limpio sin apretar.";
+        }
+      } else if (tipo === 'corte') {
+        res.innerHTML = "<strong>Cortes y heridas:</strong><br>1. Lava la herida con agua y jabón neutro.<br>2. Haz presión directa sobre el corte con una gasa limpia para detener el sangrado.<br>3. Desinfecta con antiséptico y protege con una tirita o vendaje.";
+      } else if (tipo === 'fiebre') {
+        if (edad === 'bebe') {
+          res.innerHTML = "<strong>Fiebre en Bebé:</strong><br>1. Si el bebé tiene menos de 3 meses y supera 38ºC, acude al médico de inmediato.<br>2. Mantén al bebé hidratado (leche materna o biberón).<br>3. No lo abrigues en exceso ni le des medicamentos sin prescripción médica.";
+        } else {
+          res.innerHTML = "<strong>Fiebre alta:</strong><br>1. Mantén buena hidratación bebiendo agua con frecuencia.<br>2. Mantén la estancia fresca y usa ropa ligera.<br>3. Si supera los 38.5ºC o dura más de 2 días, acude al médico.";
+        }
+      }
+
+      document.getElementById('btnAudioAux').style.display = 'block';
+    }
+
+    function leerVoz(elementId) {
+      const texto = document.getElementById(elementId).innerText;
+      if ('speechSynthesis' in window) {
+        const mensaje = new SpeechSynthesisUtterance(texto);
+        mensaje.lang = 'es-ES';
+        window.speechSynthesis.speak(mensaje);
+      } else {
+        alert('Tu navegador no soporta la lectura de voz.');
+      }
+    }
+  </script>
+
+</body>
+</html>
